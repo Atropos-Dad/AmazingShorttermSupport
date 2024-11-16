@@ -3,6 +3,8 @@ from db_handler import get, create, modify
 from ai_categorize.prompt_the_ai import categorize
 from os import getenv
 import json
+import os
+from litellm import transcription
 
 openrouter_key = getenv("OPENROUTER_KEY")
 if not openrouter_key:
@@ -80,6 +82,25 @@ def speech_to_text():
     # This is a placeholder endpoint for the speech-to-text functionality
     # You would implement actual speech-to-text processing here
     return jsonify({"text": "Sample transcribed text"})
-    
+
+@app.route('/upload_audio', methods=['POST'])
+def upload_audio():
+    if 'audio_file' not in request.files:
+        return jsonify({'error': 'No audio file provided'}), 400
+
+    audio = request.files['audio_file']
+    filename = 'uploaded_audio.webm'
+    audio.save(filename)
+
+    with open(filename, "rb") as file:
+        response = transcription(
+            file=(filename, file.read()),
+            model="groq/distil-whisper-large-v3-en",
+            response_format="verbose_json",
+        )
+        transcription_text = response.text
+
+    os.remove(filename)
+    return jsonify({'transcription': transcription_text})
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

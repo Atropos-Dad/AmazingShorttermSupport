@@ -257,6 +257,58 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+
+    let isRecording = false;
+    let mediaRecorder;
+    let audioChunks = [];
+
+    const recordButton = document.querySelector('.main-record-btn');
+
+    recordButton.addEventListener('click', () => {
+        if (!isRecording) {
+            isRecording = true;
+            recordButton.classList.add('recording');
+
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.start();
+
+                    mediaRecorder.ondataavailable = event => {
+                        audioChunks.push(event.data);
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        audioChunks = [];
+
+                        const formData = new FormData();
+                        formData.append('audio_file', audioBlob, 'recording.webm');
+
+                        fetch('/upload_audio', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Transcription:', data.transcription);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    };
+                })
+                .catch(error => {
+                    console.error('Microphone access denied:', error);
+                });
+        } else {
+            isRecording = false;
+            recordButton.classList.remove('recording');
+            mediaRecorder.stop();
+            mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        }
+    });
+    
     // Initial data load
     refreshUI();
 
