@@ -1,10 +1,101 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Search functionality
     const searchInput = document.querySelector('.search-bar input');
+    const groupsList = document.querySelector('.note-groups ul');
+    const newGroupButton = document.querySelector('.note-groups li:last-child');
+    let groups = [];
+
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
         // Add search logic here
     });
+
+    // New Group functionality
+    newGroupButton.addEventListener('click', () => {
+        const groupName = prompt('Enter the name for your new group:');
+        if (!groupName) return;
+
+        const priority = prompt('Enter priority level (1-5, where 5 is highest):');
+        const priorityNum = parseInt(priority);
+
+        if (isNaN(priorityNum) || priorityNum < 1 || priorityNum > 5) {
+            alert('Please enter a valid priority level between 1 and 5');
+            return;
+        }
+
+        // Add to both sidebar and recent sections
+        addNewGroup(groupName, priorityNum);
+        if (priorityNum >= 4) {
+            addNewSection(groupName, 'Just created', priorityNum);
+        }
+    });
+
+    function addNewGroup(name, priority) {
+        const li = document.createElement('li');
+        li.dataset.groupName = name;
+        li.innerHTML = `
+            <i class="fas fa-book"></i>
+            ${name}
+            ${priority === 5 ? '<span style="color: red">*</span>' : ''}
+        `;
+
+        // Insert before the "New Group" button
+        groupsList.insertBefore(li, newGroupButton);
+
+        // Add to groups array
+        groups.push({
+            name: name,
+            priority: priority,
+            timestamp: Date.now()
+        });
+    }
+
+    function addNewSection(title, lastVisited, priority = 0) {
+        const sectionGrid = document.querySelector('.section-grid');
+        const newSection = document.createElement('div');
+        newSection.className = 'section-card';
+        newSection.dataset.groupName = title;
+        newSection.innerHTML = `
+            <h3>${title} ${priority === 5 ? '<span style="color: red">*</span>' : ''}</h3>
+            <p>Last visited: ${lastVisited}</p>
+            <div class="section-actions">
+                <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                <button class="delete-btn"><i class="fas fa-trash"></i></button>
+            </div>
+        `;
+
+        // Add delete functionality
+        const deleteBtn = newSection.querySelector('.delete-btn');
+        deleteBtn.addEventListener('click', () => {
+            deleteGroupAndSection(title);
+        });
+
+        sectionGrid.prepend(newSection);
+    }
+
+    // Add this new function to handle deletion from both places
+    function deleteGroupAndSection(name) {
+        if (confirm('Are you sure you want to delete this group?')) {
+            // Remove from sidebar
+            const sidebarItems = document.querySelectorAll('.note-groups li');
+            sidebarItems.forEach(item => {
+                if (!item.querySelector('.fa-plus') && item.dataset.groupName === name) {
+                    item.remove();
+                }
+            });
+            
+            // Remove from Recent Sections
+            const sections = document.querySelectorAll('.section-card');
+            sections.forEach(section => {
+                if (section.dataset.groupName === name) {
+                    section.remove();
+                }
+            });
+
+            // Remove from groups array
+            groups = groups.filter(group => group.name !== name);
+        }
+    }
 
     // New section button
     const newSectionBtn = document.querySelector('.new-section-btn');
@@ -89,45 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-  
-    function addNewSection(title, lastVisited, color) {
-        const sectionGrid = document.querySelector('.section-grid');
-        const newSection = document.createElement('div');
-        newSection.className = 'section-card';
-        newSection.style.backgroundColor = color;
-        newSection.innerHTML = `
-            <h3>${title}</h3>
-            <p>Last visited: ${lastVisited}</p>
-            <div class="section-actions">
-                <button class="edit-btn"><i class="fas fa-edit"></i></button>
-                <button class="delete-btn"><i class="fas fa-trash"></i></button>
-            </div>
-        `;
-
-        // Add click handlers for edit and delete
-        const editBtn = newSection.querySelector('.edit-btn');
-        const deleteBtn = newSection.querySelector('.delete-btn');
-
-        editBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            // Add edit functionality here
-        });
-
-        deleteBtn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            if (confirm('Are you sure you want to delete this section?')) {
-                try {
-                    // Add API call to delete section
-                    newSection.remove();
-                } catch (error) {
-                    console.error('Error deleting section:', error);
-                }
-            }
-        });
-
-        sectionGrid.prepend(newSection);
-    }
-
     function addNewReminder(title, datetime) {
         const reminderList = document.querySelector('.reminder-list');
         const newReminder = document.createElement('div');
@@ -205,4 +257,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     slider.addEventListener('scroll', updateArrowVisibility);
     updateArrowVisibility(); // Initial check
+
+    // Add some CSS for the delete button in sidebar
+    const style = document.createElement('style');
+    style.textContent = `
+        .delete-group-btn {
+            background: none;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            padding: 4px;
+            margin-left: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .note-groups li:hover .delete-group-btn {
+            opacity: 1;
+        }
+
+        .delete-group-btn:hover {
+            color: #ff0000;
+        }
+    `;
+    document.head.appendChild(style);
 });
