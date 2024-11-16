@@ -207,7 +207,7 @@ header h1 {
 /* Section Cards */
 .section-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 180px));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1.5rem;
     justify-content: center;
     margin-top: 1.5rem;
@@ -220,11 +220,11 @@ header h1 {
     box-shadow: var(--shadow-sm);
     transition: all 0.2s ease;
     border: 1px solid var(--border-color);
-    aspect-ratio: 1;
+    min-height: 250px;
+    aspect-ratio: auto;
     display: flex;
     flex-direction: column;
     position: relative;
-    min-height: 180px;
 }
 
 .section-card:hover {
