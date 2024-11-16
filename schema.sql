@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS "notes" (
 	"title" TEXT,
 	"content" TEXT,
 	"category_id" INTEGER,
+	"urgency" INTEGER,
 	PRIMARY KEY("id"),
 	FOREIGN KEY ("category_id") REFERENCES "category"("id")
 	ON UPDATE NO ACTION ON DELETE NO ACTION
