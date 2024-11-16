@@ -56,12 +56,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 <form id="newGroupForm">
                     <div class="form-group">
                         <label for="groupName">Group Name</label>
-                        <input 
-                            type="text" 
-                            id="groupName" 
-                            required 
-                            placeholder="Enter group name"
-                        >
+                        <div class="input-with-audio">
+                            <input 
+                                type="text" 
+                                id="groupName" 
+                                required 
+                                placeholder="Enter group name"
+                            >
+                            <button type="button" class="audio-btn" id="recordBtn">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+                        <div id="audioFeedback" class="audio-feedback" style="display: none;">
+                            <span class="recording-text">Recording...</span>
+                            <div class="audio-wave"></div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="priorityLevel">Priority Level (0-4)</label>
@@ -83,6 +92,70 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         document.body.appendChild(modal);
+
+        // Audio recording functionality
+        const recordBtn = modal.querySelector('#recordBtn');
+        const audioFeedback = modal.querySelector('#audioFeedback');
+        const groupNameInput = modal.querySelector('#groupName');
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        recordBtn.addEventListener('click', async () => {
+            try {
+                if (!isRecording) {
+                    // Start recording
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = (event) => {
+                        audioChunks.push(event.data);
+                    };
+
+                    mediaRecorder.onstop = async () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        
+                        // Convert speech to text
+                        try {
+                            const formData = new FormData();
+                            formData.append('audio', audioBlob);
+                            
+                            // You'll need to set up this endpoint in your backend
+                            const response = await fetch('/api/speech-to-text', {
+                                method: 'POST',
+                                body: formData
+                            });
+                            
+                            const data = await response.json();
+                            if (data.text) {
+                                groupNameInput.value = data.text;
+                            }
+                        } catch (error) {
+                            console.error('Speech to text error:', error);
+                            alert('Failed to convert speech to text. Please try again.');
+                        }
+
+                        audioFeedback.style.display = 'none';
+                        recordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                        recordBtn.classList.remove('recording');
+                    };
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    audioFeedback.style.display = 'flex';
+                    recordBtn.innerHTML = '<i class="fas fa-stop"></i>';
+                    recordBtn.classList.add('recording');
+                } else {
+                    // Stop recording
+                    mediaRecorder.stop();
+                    isRecording = false;
+                }
+            } catch (err) {
+                console.error('Error accessing microphone:', err);
+                alert('Unable to access microphone. Please check your permissions.');
+            }
+        });
 
         // Form submission handler
         const form = modal.querySelector('#newGroupForm');
@@ -365,4 +438,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     `;
     document.head.appendChild(style);
+
+    // Main record button functionality
+    const mainRecordBtn = document.querySelector('.main-record-btn');
+    let isMainRecording = false;
+    let mainMediaRecorder;
+    let mainAudioChunks = [];
+
+    mainRecordBtn.addEventListener('click', async () => {
+        if (!isMainRecording) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mainMediaRecorder = new MediaRecorder(stream);
+                mainAudioChunks = [];
+
+                mainMediaRecorder.ondataavailable = (event) => {
+                    mainAudioChunks.push(event.data);
+                };
+
+                mainMediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(mainAudioChunks, { type: 'audio/wav' });
+                    
+                    try {
+                        const formData = new FormData();
+                        formData.append('audio', audioBlob);
+                        
+                        // You'll need to set up this endpoint in your backend
+                        const response = await fetch('/api/speech-to-text', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const data = await response.json();
+                        if (data.text) {
+                            // Create a new note or section with the transcribed text
+                            addNewSection(data.text, 'Voice Note', 1);
+                        }
+                    } catch (error) {
+                        console.error('Speech to text error:', error);
+                        alert('Failed to convert speech to text. Please try again.');
+                    }
+
+                    mainRecordBtn.innerHTML = '<i class="fas fa-microphone"></i><span>Record Note</span>';
+                    mainRecordBtn.classList.remove('recording');
+                };
+
+                mainMediaRecorder.start();
+                isMainRecording = true;
+                mainRecordBtn.innerHTML = '<i class="fas fa-stop"></i><span>Stop Recording</span>';
+                mainRecordBtn.classList.add('recording');
+            } catch (err) {
+                console.error('Error accessing microphone:', err);
+                alert('Unable to access microphone. Please check your permissions.');
+            }
+        } else {
+            mainMediaRecorder.stop();
+            isMainRecording = false;
+        }
+    });
 });

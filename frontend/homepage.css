@@ -446,3 +446,118 @@ header h1 {
 .modal-btn.secondary:hover {
     background-color: var(--border-color);
 }
+
+.input-with-audio {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.audio-btn {
+    background-color: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.audio-btn:hover {
+    background-color: var(--accent-hover);
+    transform: scale(1.1);
+}
+
+.audio-btn.recording {
+    background-color: #e74c3c;
+    animation: pulse 1.5s infinite;
+}
+
+.audio-feedback {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-secondary);
+}
+
+.recording-text {
+    font-size: 0.9rem;
+}
+
+.audio-wave {
+    width: 50px;
+    height: 20px;
+    background: linear-gradient(#e74c3c, #e74c3c) center/2px 60% no-repeat,
+                linear-gradient(#e74c3c, #e74c3c) left/2px 80% no-repeat,
+                linear-gradient(#e74c3c, #e74c3c) right/2px 80% no-repeat;
+    animation: wave 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@keyframes wave {
+    0%, 100% { background-size: 2px 60%, 2px 80%, 2px 80%; }
+    50% { background-size: 2px 80%, 2px 60%, 2px 60%; }
+}
+
+/* Add these styles for the main record button */
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.main-record-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 1.5rem;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.main-record-btn:hover {
+    transform: translateY(-2px);
+    background-color: #c0392b;
+    box-shadow: var(--shadow-md);
+}
+
+.main-record-btn.recording {
+    background-color: #c0392b;
+    animation: recordingPulse 1.5s infinite;
+}
+
+.main-record-btn i {
+    font-size: 1.3rem;
+}
+
+@keyframes recordingPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+/* Dark mode override */
+[data-theme="dark"] .main-record-btn {
+    background-color: #c0392b;
+}
+
+[data-theme="dark"] .main-record-btn:hover {
+    background-color: #e74c3c;
+}
