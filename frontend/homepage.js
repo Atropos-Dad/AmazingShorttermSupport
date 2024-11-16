@@ -9,9 +9,78 @@ document.addEventListener('DOMContentLoaded', () => {
     // New section button
     const newSectionBtn = document.querySelector('.new-section-btn');
     newSectionBtn.addEventListener('click', () => {
-        // Add new section creation logic here
-    });
+        // Create modal for new section input
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h2>Create New Section</h2>
+                <form id="newSectionForm">
+                    <div class="form-group">
+                        <label for="sectionTitle">Section Title</label>
+                        <input type="text" id="sectionTitle" required placeholder="Enter section title">
+                    </div>
+                    <div class="form-group">
+                        <label for="sectionColor">Section Color</label>
+                        <input type="color" id="sectionColor" value="#f5f5f5">
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Create</button>
+                        <button type="button" class="cancel-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        `;
 
+        document.body.appendChild(modal);
+
+        // Handle form submission
+        const form = modal.querySelector('#newSectionForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('sectionTitle').value;
+            const color = document.getElementById('sectionColor').value;
+            const currentDate = new Date().toLocaleDateString();
+
+            try {
+                const response = await fetch('/api/sections', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                        color,
+                        lastVisited: currentDate
+                    })
+                });
+
+                if (response.ok) {
+                    // Add new section to the UI
+                    addNewSection(title, currentDate, color);
+                    modal.remove();
+                } else {
+                    throw new Error('Failed to create section');
+                }
+            } catch (error) {
+                console.error('Error creating section:', error);
+                alert('Failed to create section. Please try again.');
+            }
+        });
+
+        // Handle cancel button
+        const cancelBtn = modal.querySelector('.cancel-btn');
+        cancelBtn.addEventListener('click', () => {
+            modal.remove();
+        });
+
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+    });
 
     const noteGroups = document.querySelectorAll('.note-groups li');
     noteGroups.forEach(group => {
@@ -21,14 +90,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
   
-    function addNewSection(title, lastVisited) {
+    function addNewSection(title, lastVisited, color) {
         const sectionGrid = document.querySelector('.section-grid');
         const newSection = document.createElement('div');
         newSection.className = 'section-card';
+        newSection.style.backgroundColor = color;
         newSection.innerHTML = `
             <h3>${title}</h3>
             <p>Last visited: ${lastVisited}</p>
+            <div class="section-actions">
+                <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                <button class="delete-btn"><i class="fas fa-trash"></i></button>
+            </div>
         `;
+
+        // Add click handlers for edit and delete
+        const editBtn = newSection.querySelector('.edit-btn');
+        const deleteBtn = newSection.querySelector('.delete-btn');
+
+        editBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Add edit functionality here
+        });
+
+        deleteBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (confirm('Are you sure you want to delete this section?')) {
+                try {
+                    // Add API call to delete section
+                    newSection.remove();
+                } catch (error) {
+                    console.error('Error deleting section:', error);
+                }
+            }
+        });
+
         sectionGrid.prepend(newSection);
     }
 
