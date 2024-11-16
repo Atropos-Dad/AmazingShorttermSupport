@@ -1,4 +1,38 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Add this at the beginning of your existing JavaScript
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const htmlElement = document.documentElement;
+    
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        htmlElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme === 'dark');
+    }
+
+    // Theme toggle functionality
+    darkModeToggle.addEventListener('click', () => {
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        htmlElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme === 'dark');
+    });
+
+    function updateThemeIcon(isDark) {
+        const icon = darkModeToggle.querySelector('i');
+        const text = darkModeToggle.querySelector('span');
+        
+        if (isDark) {
+            icon.className = 'fas fa-sun';
+            text.textContent = 'Light Mode';
+        } else {
+            icon.className = 'fas fa-moon';
+            text.textContent = 'Dark Mode';
+        }
+    }
+
     // Search functionality
     const searchInput = document.querySelector('.search-bar input');
     const groupsList = document.querySelector('.note-groups ul');
