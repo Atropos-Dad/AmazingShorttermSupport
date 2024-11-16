@@ -7,6 +7,7 @@ SCHEMA_FILE = "schema.sql"
 
 class SingletonDBConnection:
     _instance = None
+    connection = None  # Class-level attribute initialization
 
     def __new__(cls):
         if cls._instance is None:
@@ -15,12 +16,15 @@ class SingletonDBConnection:
         return cls._instance
 
     def _initialize(self):
-        self.connection = self._create_connection(DB_FILE)
+        if self.connection is None:  # Only initialize if not already connected
+            self.connection = self._create_connection(DB_FILE)
+            if self.connection:
+                self.connection.row_factory = sqlite3.Row  # Enable row factory for named columns
 
     def _create_connection(self, db_file):
         try:
             db_exists = os.path.exists(db_file)
-            conn = sqlite3.connect(db_file)
+            conn = sqlite3.connect(db_file, check_same_thread=False)
             print(f"Connection to SQLite DB successful: {db_file}")
             if not db_exists:
                 self._initialize_database(conn)
@@ -34,6 +38,7 @@ class SingletonDBConnection:
         try:
             with open(SCHEMA_FILE, 'r') as schema_file:
                 conn.executescript(schema_file.read())
+                conn.commit()
             print(f"Database initialized with schema from {SCHEMA_FILE}")
         except Error as e:
             print(f"Error: '{e}' occurred while initializing the database")
@@ -42,7 +47,7 @@ class SingletonDBConnection:
 
     def get_connection(self):
         if self.connection is None:
-            self.connection = self._create_connection(DB_FILE)
+            self._initialize()
         return self.connection
 
     def cleanup(self):
