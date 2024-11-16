@@ -46,22 +46,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // New Group functionality
     newGroupButton.addEventListener('click', () => {
-        const groupName = prompt('Enter the name for your new group:');
-        if (!groupName) return;
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Create New Group</h2>
+                </div>
+                <form id="newGroupForm">
+                    <div class="form-group">
+                        <label for="groupName">Group Name</label>
+                        <input 
+                            type="text" 
+                            id="groupName" 
+                            required 
+                            placeholder="Enter group name"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="priorityLevel">Priority Level (0-4)</label>
+                        <input 
+                            type="number" 
+                            id="priorityLevel" 
+                            required 
+                            min="0" 
+                            max="4" 
+                            placeholder="Enter priority level"
+                        >
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="modal-btn secondary" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="modal-btn primary">Create Group</button>
+                    </div>
+                </form>
+            </div>
+        `;
 
-        const priority = prompt('Enter priority level (1-5, where 5 is highest):');
-        const priorityNum = parseInt(priority);
+        document.body.appendChild(modal);
 
-        if (isNaN(priorityNum) || priorityNum < 1 || priorityNum > 5) {
-            alert('Please enter a valid priority level between 1 and 5');
-            return;
-        }
+        // Form submission handler
+        const form = modal.querySelector('#newGroupForm');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const groupName = document.getElementById('groupName').value;
+            const priority = parseInt(document.getElementById('priorityLevel').value);
 
-        // Add to both sidebar and recent sections
-        addNewGroup(groupName, priorityNum);
-        if (priorityNum >= 4) {
-            addNewSection(groupName, 'Just created', priorityNum);
-        }
+            if (groupName && !isNaN(priority) && priority >= 0 && priority <= 4) {
+                addNewGroup(groupName, priority);
+                if (priority >= 0) {
+                    addNewSection(groupName, 'Just created', priority);
+                }
+                modal.remove();
+            }
+        });
+
+        // Cancel button handler
+        const cancelBtn = modal.querySelector('#cancelBtn');
+        cancelBtn.addEventListener('click', () => {
+            modal.remove();
+        });
+
+        // Close on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
     });
 
     function addNewGroup(name, priority) {
@@ -70,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         li.innerHTML = `
             <i class="fas fa-book"></i>
             ${name}
-            ${priority === 5 ? '<span style="color: red">*</span>' : ''}
+            ${priority === 4 ? '<span style="color: red">*</span>' : ''}
         `;
 
         // Insert before the "New Group" button
@@ -90,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newSection.className = 'section-card';
         newSection.dataset.groupName = title;
         newSection.innerHTML = `
-            <h3>${title} ${priority === 5 ? '<span style="color: red">*</span>' : ''}</h3>
+            <h3>${title} ${priority === 4 ? '<span style="color: red">*</span>' : ''}</h3>
             <p>Last visited: ${lastVisited}</p>
             <div class="section-actions">
                 <button class="edit-btn"><i class="fas fa-edit"></i></button>
