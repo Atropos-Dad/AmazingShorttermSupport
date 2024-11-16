@@ -231,27 +231,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Add this new function to handle deletion from both places
-    function deleteGroupAndSection(name) {
-        if (confirm('Are you sure you want to delete this group?')) {
-            // Remove from sidebar
-            const sidebarItems = document.querySelectorAll('.note-groups li');
-            sidebarItems.forEach(item => {
-                if (!item.querySelector('.fa-plus') && item.dataset.groupName === name) {
-                    item.remove();
-                }
-            });
-            
-            // Remove from Recent Sections
-            const sections = document.querySelectorAll('.section-card');
-            sections.forEach(section => {
-                if (section.dataset.groupName === name) {
-                    section.remove();
-                }
-            });
+    function deleteGroupAndSection(title) {
+        const deleteModal = document.createElement('div');
+        deleteModal.className = 'modal-overlay delete-modal';
+        deleteModal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="fas fa-trash-alt"></i>
+                    <h3>Delete "${title}"?</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="delete-warning">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>This action cannot be undone.</p>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-btn secondary" id="cancelDelete">Cancel</button>
+                    <button class="modal-btn delete" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        `;
 
-            // Remove from groups array
-            groups = groups.filter(group => group.name !== name);
-        }
+        document.body.appendChild(deleteModal);
+
+        const confirmBtn = deleteModal.querySelector('#confirmDelete');
+        const cancelBtn = deleteModal.querySelector('#cancelDelete');
+
+        const closeModal = () => {
+            deleteModal.remove();
+        };
+
+        confirmBtn.addEventListener('click', () => {
+            const groupItem = document.querySelector(`li[data-group-name="${title}"]`);
+            const sectionCard = document.querySelector(`.section-card[data-group-name="${title}"]`);
+            
+            if (groupItem) groupItem.remove();
+            if (sectionCard) sectionCard.remove();
+            
+            groups = groups.filter(group => group.name !== title);
+            closeModal();
+        });
+
+        cancelBtn.addEventListener('click', closeModal);
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target === deleteModal) closeModal();
+        });
     }
 
     // New section button

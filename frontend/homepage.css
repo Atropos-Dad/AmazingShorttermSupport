@@ -9,6 +9,10 @@
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+    --hover-lift: translateY(-4px);
+    --card-lift: translateY(-6px);
 }
 
 /* Dark theme variables */
@@ -90,27 +94,44 @@ body {
 .container {
     display: flex;
     min-height: 100vh;
+    background-color: var(--bg-primary);
+    transition: var(--transition-smooth);
+    position: relative;
+    background: linear-gradient(
+        to bottom right,
+        var(--bg-primary),
+        var(--bg-secondary)
+    );
 }
 
 /* Sidebar Styles */
 .sidebar {
-    width: 280px;
+    width: 250px;
     background-color: var(--bg-secondary);
-    padding: 1.5rem;
-    border-right: 1px solid var(--border-color);
+    padding: 1.2rem;
+    border-right: 2px solid var(--border-color);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
     position: fixed;
     height: 100vh;
     overflow-y: auto;
+    transition: var(--transition-smooth);
+    backdrop-filter: blur(10px);
 }
 
 .search-bar {
     background-color: var(--bg-primary);
-    border-radius: 8px;
-    padding: 0.8rem 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    padding: 0.7rem;
     display: flex;
     align-items: center;
     margin-bottom: 1.5rem;
     transition: all 0.2s ease;
+}
+
+.search-bar:focus-within {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 1px var(--accent-primary);
 }
 
 .search-bar i {
@@ -143,16 +164,18 @@ body {
 
 .note-groups li {
     padding: 0.8rem 1rem;
-    margin: 0.2rem 0;
-    border-radius: 6px;
-    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
     cursor: pointer;
+    transition: var(--transition-smooth);
     display: flex;
     align-items: center;
     gap: 0.8rem;
 }
 
 .note-groups li:hover {
+    padding-left: 1.5rem;
     background-color: var(--bg-primary);
 }
 
@@ -162,73 +185,125 @@ body {
 
 /* Main Content */
 .main-content {
-    flex: 1;
-    margin-left: 280px;
+    margin-left: 250px;
     padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    transition: all 0.3s ease;
     background-color: var(--bg-primary);
 }
 
 header {
+    background-color: var(--bg-secondary);
+    padding: 1.2rem 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--bg-secondary);
-    padding: 1.5rem 2rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow-sm);
     margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 header h1 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     color: var(--text-primary);
+    margin: 0;
+    font-weight: 600;
 }
 
-.new-section-btn {
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.main-record-btn {
     background-color: var(--accent-primary);
     color: white;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
+    border: 1px solid transparent;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
     transition: all 0.2s ease;
 }
 
-.new-section-btn:hover {
+.main-record-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main-record-btn i {
+    font-size: 1rem;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] header {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .main-record-btn {
+    border-color: var(--button-border);
+}
+
+[data-theme="dark"] .main-record-btn:hover {
     background-color: var(--accent-hover);
-    transform: translateY(-2px);
 }
 
 /* Section Cards */
 .section-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 180px));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1.5rem;
     justify-content: center;
     margin-top: 1.5rem;
+    transition: all 0.3s ease;
 }
 
 .section-card {
     background-color: var(--bg-secondary);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.2s ease;
     border: 1px solid var(--border-color);
-    aspect-ratio: 1;
-    display: flex;
-    flex-direction: column;
+    border-left: 4px solid var(--accent-primary);
+    border-bottom: 2px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1.5rem;
     position: relative;
-    min-height: 180px;
+    transition: var(--transition-bounce);
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.05),
+        0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.section-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent-primary);
+    transition: var(--transition-smooth);
+}
+
+.section-card:hover::before {
+    width: 100%;
+    opacity: 0.1;
 }
 
 .section-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
+    transform: var(--card-lift);
+    border-color: var(--accent-primary);
+    box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.1),
+        0 4px 6px rgba(0, 0, 0, 0.06);
 }
 
 .section-card h3 {
@@ -244,10 +319,12 @@ header h1 {
 .section-actions {
     position: absolute;
     bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
+    right: 1rem;
     display: flex;
-    gap: 0.8rem;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: var(--transition-smooth);
+    transform: translateY(10px);
     background-color: var(--bg-secondary);
     padding: 0.5rem;
     border-radius: 8px;
@@ -255,30 +332,31 @@ header h1 {
     z-index: 2;
 }
 
+.section-card:hover .section-actions {
+    transform: translateY(0);
+    opacity: 1;
+}
+
 .edit-btn, .delete-btn {
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background-color: var(--bg-primary);
-    color: var(--text-secondary);
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    transition: var(--transition-bounce);
+}
+
+.edit-btn:hover, .delete-btn:hover {
+    transform: scale(1.1);
 }
 
 .edit-btn:hover {
-    background-color: #3498db;
+    background-color: var(--accent-primary);
     color: white;
-    transform: scale(1.1);
 }
 
 .delete-btn:hover {
-    background-color: #e74c3c;
+    background-color: #e53e3e;
     color: white;
-    transform: scale(1.1);
 }
 
 /* Dark mode specific overrides for the buttons */
@@ -294,10 +372,10 @@ header h1 {
 /* Reminders Section */
 .reminders {
     background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
     padding: 1.5rem;
-    border-radius: 12px;
-    margin-top: 2rem;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .reminder-list {
@@ -308,17 +386,26 @@ header h1 {
 }
 
 .reminder-item {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-primary);
+    border-bottom: 2px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    transition: var(--transition-smooth);
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 1rem;
-    background-color: var(--bg-primary);
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    position: relative;
 }
 
 .reminder-item:hover {
-    transform: translateX(4px);
+    border-color: var(--accent-primary);
+    transform: translateX(8px);
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.05),
+        0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .reminder-item i {
@@ -370,15 +457,23 @@ header h1 {
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    animation: modalFadeIn 0.3s ease;
 }
 
 .modal-content {
     background-color: var(--bg-secondary);
     padding: 2rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
+    border-radius: 4px;
+    box-shadow: 
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
     width: 90%;
     max-width: 400px;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .modal-header {
@@ -403,15 +498,19 @@ header h1 {
 .form-group input {
     width: 100%;
     padding: 0.8rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
     background-color: var(--bg-primary);
     color: var(--text-primary);
+    transition: var(--transition-smooth);
 }
 
 .form-group input:focus {
     outline: none;
     border-color: var(--accent-primary);
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.05),
+        0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .modal-actions {
@@ -517,25 +616,43 @@ header h1 {
 }
 
 .main-record-btn {
+    background-color: var(--accent-primary);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    padding: 1rem 1.5rem;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: var(--shadow-sm);
+    transition: var(--transition-bounce);
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.main-record-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.main-record-btn:hover::after {
+    width: 300%;
+    height: 300%;
 }
 
 .main-record-btn:hover {
+    background-color: var(--accent-hover);
+    border-color: var(--border-color);
     transform: translateY(-2px);
-    background-color: #c0392b;
-    box-shadow: var(--shadow-md);
 }
 
 .main-record-btn.recording {
@@ -560,4 +677,333 @@ header h1 {
 
 [data-theme="dark"] .main-record-btn:hover {
     background-color: #e74c3c;
+}
+
+/* Professional animations */
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dark mode refinements */
+[data-theme="dark"] {
+    .section-card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-card:hover {
+        box-shadow: 
+            0 10px 25px rgba(0, 0, 0, 0.3),
+            0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .reminder-item {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    input:focus, textarea:focus {
+        box-shadow: 
+            0 4px 6px rgba(0, 0, 0, 0.2),
+            0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Loading state animations */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 4px;
+    transition: var(--transition-smooth);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-hover);
+}
+
+/* Enhanced section cards with sophisticated borders */
+.section-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-primary);
+    border-bottom: 2px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1.5rem;
+    position: relative;
+    transition: var(--transition-bounce);
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.05),
+        0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.section-card:hover {
+    border-color: var(--accent-primary);
+    transform: var(--card-lift);
+    box-shadow: 
+        0 10px 20px rgba(0, 0, 0, 0.1),
+        0 4px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* Enhanced reminders section */
+.reminders {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Enhanced reminder items with distinct borders */
+.reminder-item {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-primary);
+    border-bottom: 2px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+}
+
+.reminder-item:hover {
+    border-color: var(--accent-primary);
+    transform: translateX(8px);
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.05),
+        0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode specific border enhancements */
+[data-theme="dark"] .section-card {
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-primary);
+    border-bottom: 2px solid var(--border-color);
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.2),
+        0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .reminder-item {
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent-primary);
+    border-bottom: 2px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .reminders {
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover states for dark mode */
+[data-theme="dark"] .section-card:hover {
+    border-color: var(--button-border);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.3),
+        0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .reminder-item:hover {
+    border-color: var(--button-border);
+    box-shadow: 
+        0 6px 8px rgba(0, 0, 0, 0.2),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Additional enhancements for sections and reminders */
+.section-card::after,
+.reminder-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 4px;
+    pointer-events: none;
+    transition: var(--transition-smooth);
+    border: 1px solid transparent;
+}
+
+.section-card:hover::after,
+.reminder-item:hover::after {
+    border-color: var(--accent-primary);
+    animation: borderPulse 2s infinite;
+}
+
+@keyframes borderPulse {
+    0% { border-color: var(--accent-primary); opacity: 1; }
+    50% { border-color: transparent; opacity: 0; }
+    100% { border-color: var(--accent-primary); opacity: 1; }
+}
+
+/* Priority indicators for reminders */
+.reminder-item[data-priority="high"] {
+    border-left-color: #e53e3e;
+}
+
+.reminder-item[data-priority="medium"] {
+    border-left-color: #ed8936;
+}
+
+.reminder-item[data-priority="low"] {
+    border-left-color: #48bb78;
+}
+
+/* Section header enhancements */
+.reminders h2,
+.recent-sections h2 {
+    position: relative;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.reminders h2::after,
+.recent-sections h2::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background-color: var(--accent-primary);
+}
+
+/* Simplified Delete Modal Styles */
+.delete-modal .modal-content {
+    max-width: 350px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.delete-modal .modal-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.delete-modal .modal-header i {
+    color: #e53e3e;
+}
+
+.delete-modal .modal-header h3 {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.delete-modal .modal-body {
+    padding: 1rem;
+}
+
+.delete-warning {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.delete-warning i {
+    color: #e53e3e;
+}
+
+.delete-modal .modal-actions {
+    padding: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.modal-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-btn.secondary {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.modal-btn.delete {
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+}
+
+.modal-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .delete-modal .modal-content {
+    border-color: var(--border-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .modal-btn.secondary {
+    background-color: var(--accent-primary);
+    border-color: var(--button-border);
 }
