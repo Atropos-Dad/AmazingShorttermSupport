@@ -9,7 +9,6 @@ model = "openrouter/openai/gpt-4o"  # OpenRouter model format
 
 def get_prompt_from_note(title, content):
     categories = get.get_categories() # returns tuples, need to extract category names
-    categories = [category[1] for category in categories]
     
     # open prompt.txt
     with open("ai_categorize/prompt.txt", "r") as f:
