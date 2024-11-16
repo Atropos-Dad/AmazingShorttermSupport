@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoteHub</title>
+    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search notes...">
+            </div>
+            <div class="note-groups">
+                <h3>Groups</h3>
+                <ul>
+                    <li><i class="fas fa-book"></i> Personal</li>
+                    <li><i class="fas fa-briefcase"></i> Work</li>
+                    <li><i class="fas fa-graduation-cap"></i> Study</li>
+                    <li><i class="fas fa-plus"></i> New Group</li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>Welcome back!</h1>
+                <button class="new-section-btn"><i class="fas fa-plus"></i> New Section</button>
+            </header>
+
+            <section class="recent-sections">
+                <h2>Recent Sections</h2>
+                <div class="section-grid">
+                    <div class="section-card">
+                        <h3>Project Notes</h3>
+                        <p>Last visited: 2 hours ago</p>
+                    </div>
+                    <div class="section-card">
+                        <h3>Meeting Minutes</h3>
+                        <p>Last visited: Yesterday</p>
+                    </div>
+                    <div class="section-card">
+                        <h3>Ideas</h3>
+                        <p>Last visited: 2 days ago</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="reminders">
+                <h2>Reminders</h2>
+                <div class="reminder-list">
+                    <div class="reminder-item">
+                        <i class="fas fa-bell"></i>
+                        <div class="reminder-content">
+                            <h4>Team Meeting</h4>
+                            <p>Tomorrow at 10:00 AM</p>
+                        </div>
+                    </div>
+                    <div class="reminder-item">
+                        <i class="fas fa-bell"></i>
+                        <div class="reminder-content">
+                            <h4>Project Deadline</h4>
+                            <p>Friday at 5:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="homepage.js"></script>
+</body>
+</html>
