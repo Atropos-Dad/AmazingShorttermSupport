@@ -5,12 +5,11 @@ from db_handler.get import get_categories
 def create_note(title: str, content: str, category: str, urgency: int = 0):
     # check if category exists
     categories = get_categories()
-    if category not in [category[1] for category in categories]:
-        category_id = 1 # default category id
-    else:
-        category_id = [category[0] for category in categories if category[1] == category][0] # this is bad
-                                                                                            # should be a object/dict
-    
+    category_id = None
+    for cat in categories:
+        if cat[1] == category:
+            category_id = cat[0]
+            break
 
     conn = db.SingletonDBConnection().get_connection()
     cursor = conn.cursor()
@@ -22,3 +21,13 @@ def create_note(title: str, content: str, category: str, urgency: int = 0):
     return cursor.lastrowid
 
 
+
+def create_category(category: str):
+    conn = db.SingletonDBConnection().get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO category (title)
+        VALUES (?)
+    ''', (category,))
+    conn.commit()
+    return cursor.lastrowid

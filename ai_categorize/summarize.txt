@@ -1,0 +1,6 @@
+You summarize notes content. Generate at max a 5 word title describing what the content of the note means.
+
+User input:
+$content
+
+Place your output here:
