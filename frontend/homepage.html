@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoteHub</title>
+    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search notes...">
+            </div>
+            <div class="theme-toggle">
+                <button id="darkModeToggle">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark Mode</span>
+                </button>
+            </div>
+            <div class="note-groups">
+                <h3>Groups</h3>
+                <ul>
+                    <li><i class="fas fa-plus"></i> New Group</li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>Welcome back!</h1>
+                <div class="header-actions">
+                    <button class="main-record-btn">
+                        <i class="fas fa-microphone"></i>
+                        <span>Record Note</span>
+                    </button>
+                </div>
+            </header>
+
+            <section class="recent-sections">
+                <h2>Recent Sections</h2>
+                <div class="section-grid">
+                    <!-- Sections will be added here dynamically -->
+                </div>
+            </section>
+
+            <section class="reminders">
+                <h2>Reminders</h2>
+                <div class="reminder-list">
+                    <div class="reminder-item">
+                        <i class="fas fa-bell"></i>
+                        <div class="reminder-content">
+                            <h4>Team Meeting</h4>
+                            <p>Tomorrow at 10:00 AM</p>
+                        </div>
+                    </div>
+                    <div class="reminder-item">
+                        <i class="fas fa-bell"></i>
+                        <div class="reminder-content">
+                            <h4>Project Deadline</h4>
+                            <p>Friday at 5:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="homepage.js"></script>
+</body>
+</html>
