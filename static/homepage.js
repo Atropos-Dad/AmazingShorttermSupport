@@ -282,6 +282,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                         audioChunks = [];
 
+                        showLoadingPopup();
+
                         const formData = new FormData();
                         formData.append('audio_file', audioBlob, 'recording.webm');
 
@@ -291,10 +293,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         })
                         .then(response => response.json())
                         .then(data => {
+                            hideLoadingPopup();
                             console.log('Transcription:', data.transcription);
                         })
                         .catch(error => {
                             console.error('Error:', error);
+                            hideLoadingPopup();
                         });
                     };
                 })
@@ -308,6 +312,16 @@ document.addEventListener('DOMContentLoaded', () => {
             mediaRecorder.stream.getTracks().forEach(track => track.stop());
         }
     });
+
+    function showLoadingPopup() {  
+        const loadingPopup = document.getElementById('loadingPopup');
+        loadingPopup.style.display = "flex";
+    }
+
+    function hideLoadingPopup() {
+        const loadingPopup = document.getElementById('loadingPopup');
+        loadingPopup.style.display = "none";
+    }
     
     // Initial data load
     refreshUI();
