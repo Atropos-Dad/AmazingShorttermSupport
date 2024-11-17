@@ -38,3 +38,12 @@ def update_note(note_id: int, title: str, content: str, urgency: int = 0):
     
     conn.commit()
     return cursor.rowcount > 0
+
+def delete_note(note_id: int):
+    conn = db.SingletonDBConnection().get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        DELETE FROM notes WHERE id = ?
+    ''', (note_id,))
+    conn.commit()
+    return cursor.rowcount > 0

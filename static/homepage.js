@@ -190,9 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 required 
                                 placeholder="Enter group name"
                             >
-                            <button type="button" class="audio-btn" id="recordBtn">
-                                <i class="fas fa-microphone"></i>
-                            </button>
                         </div>
                         <div id="audioFeedback" class="audio-feedback" style="display: none;">
                             <span class="recording-text">Recording...</span>
@@ -333,4 +330,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Refresh data periodically (every 30 seconds)
     setInterval(refreshUI, 30000);
+
+    async function fetchHighUrgencyNotes() {
+        try {
+            const response = await fetch('/get_high_urgency_notes');
+            if (response.status === 404) {
+                console.warn('High urgency notes endpoint not found');
+                return [];
+            }
+            if (!response.ok) throw new Error('Failed to fetch high urgency notes');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching high urgency notes:', error);
+            return [];
+        }
+    }
+
+    async function updateSummarySection() {
+        const highUrgencyNotes = await fetchHighUrgencyNotes();
+        const summaryList = document.querySelector('.summary-list');
+        summaryList.innerHTML = ''; // Clear existing items
+
+        highUrgencyNotes.forEach(note => {
+            const summaryItem = document.createElement('a');
+            summaryItem.className = 'summary-item';
+            summaryItem.href = `/group/${encodeURIComponent(note.category)}`;
+            summaryItem.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                <div class="summary-content">
+                    <h4>${note.title}</h4>
+                    <p>Urgency: ${note.urgency}</p>
+                </div>
+            `;
+            summaryList.appendChild(summaryItem);
+        });
+    }
+
+    // Call updateSummarySection after initial data load
+    refreshUI();
+    updateSummarySection();
+
+    // Optionally, refresh the summary section periodically
+    setInterval(updateSummarySection, 30000);
 });

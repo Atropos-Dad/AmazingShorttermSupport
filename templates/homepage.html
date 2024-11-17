@@ -1,78 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NoteHub</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-    <div class="container">
-        <aside class="sidebar">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search notes...">
-            </div>
-            <div class="theme-toggle">
-                <button id="darkModeToggle">
-                    <i class="fas fa-moon"></i>
-                    <span>Dark Mode</span>
-                </button>
-            </div>
-            <div class="note-groups">
-                <h3>Groups</h3>
-                <ul>
-                    <!-- Existing groups will be added here dynamically -->
-                    <li><i class="fas fa-plus"></i> New Group</li>
-                </ul>
-            </div>
-        </aside>
-
-        <main class="main-content">
-            <header>
-                <h1>Welcome back!</h1>
-                <div class="header-actions">
-                    <button class="main-record-btn">
-                        <i class="fas fa-microphone"></i>
-                        <span>Record Note</span>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>NoteHub</title>
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='homepage.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+    </head>
+    <body>
+        <div class="container">
+            <aside class="sidebar">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search notes..." />
+                </div>
+                <div class="theme-toggle">
+                    <button id="darkModeToggle">
+                        <i class="fas fa-moon"></i>
+                        <span>Dark Mode</span>
                     </button>
                 </div>
-            </header>
-
-            <section class="recent-sections">
-                <h2>Recent Sections</h2>
-                <div class="section-grid">
-                    <!-- Sections will be added here dynamically -->
+                <div class="note-groups">
+                    <h3>Groups</h3>
+                    <ul>
+                        <!-- Existing groups will be added here dynamically -->
+                        <li><i class="fas fa-plus"></i> New Group</li>
+                    </ul>
                 </div>
-                <div id="loadingPopup" class="loading-popup" style="display: none;">
-                    <div class="loading-content">
-                        <span>Loading...</span>
+            </aside>
+
+            <main class="main-content">
+                <header>
+                    <h1>Welcome back!</h1>
+                    <div class="header-actions">
+                        <button class="main-record-btn">
+                            <i class="fas fa-microphone"></i>
+                            <span>Record Note</span>
+                        </button>
                     </div>
-                </div>
-            </section>
+                </header>
 
-            <section class="reminders">
-                <h2>Reminders</h2>
-                <div class="reminder-list">
-                    <div class="reminder-item">
-                        <i class="fas fa-bell"></i>
-                        <div class="reminder-content">
-                            <h4>Team Meeting</h4>
-                            <p>Tomorrow at 10:00 AM</p>
+                <section class="recent-sections">
+                    <h2>Recent Sections</h2>
+                    <div class="section-grid">
+                        <!-- Sections will be added here dynamically -->
+                    </div>
+                    <div
+                        id="loadingPopup"
+                        class="loading-popup"
+                        style="display: none"
+                    >
+                        <div class="loading-content">
+                            <span>Loading...</span>
                         </div>
                     </div>
-                    <div class="reminder-item">
-                        <i class="fas fa-bell"></i>
-                        <div class="reminder-content">
-                            <h4>Project Deadline</h4>
-                            <p>Friday at 5:00 PM</p>
-                        </div>
+                </section>
+
+                <section class="summary">
+                    <h2>Summary</h2>
+                    <div class="summary-list">
+                        <!-- High urgency notes will be added here dynamically -->
                     </div>
-                </div>
-            </section>
-        </main>
-    </div>
-    <script src="{{ url_for('static', filename='homepage.js') }}"></script>
-</body>
+                </section>
+            </main>
+        </div>
+        <script src="{{ url_for('static', filename='homepage.js') }}"></script>
+    </body>
 </html>

@@ -117,5 +117,19 @@ def upload_audio():
     return jsonify({'transcription': transcription_text})
 
 
+@app.route('/get_high_urgency_notes')
+def get_high_urgency_notes():
+    notes = get.get_high_urgency_notes()
+    return jsonify(notes)
+
+
+@app.route('/delete_note/<int:note_id>', methods=['DELETE'])
+def delete_note_route(note_id):
+    success = modify.delete_note(note_id)
+    if success:
+        return jsonify({"message": "Note deleted"})
+    return jsonify({"message": "Note not found"}), 404
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
