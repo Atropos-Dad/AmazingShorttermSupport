@@ -1,6 +1,6 @@
-# AmazingShorttermSupport
+# Notehold
 
-This is a little app that helps you take audio notes! 
+Notehold is a little app that helps you take better notes using your voice! 
 It's primarily a proof of concept, and was created in a few hours for a hackathon.
 
 It will transcribe your voice, generate a summary/title, and categorize it with it's urgency and into a category based on the ones you provide it with (or it will just put it in a general category if you don't provide any).
