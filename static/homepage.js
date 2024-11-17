@@ -115,13 +115,18 @@ document.addEventListener('DOMContentLoaded', () => {
         categories.forEach(category => {
             const categoryNotes = notes.filter(note => note.category === category);
             const noteCount = categoryNotes.length;
-            
+
+            // Calculate average urgency for the category
+            const totalUrgency = categoryNotes.reduce((sum, note) => sum + note.urgency, 0);
+            const averageUrgency = noteCount > 0 ? (totalUrgency / noteCount).toFixed(1) : 'N/A';
+
             const newSection = document.createElement('div');
             newSection.className = 'section-card';
             newSection.dataset.groupName = category;
             newSection.innerHTML = `
                 <h3>${category}</h3>
                 <p>${noteCount} note${noteCount !== 1 ? 's' : ''}</p>
+                <p>Average Urgency: ${averageUrgency}</p>
                 <div class="section-actions">
                     <button class="edit-btn"><i class="fas fa-edit"></i></button>
                     <button class="delete-btn"><i class="fas fa-trash"></i></button>
@@ -185,9 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 required 
                                 placeholder="Enter group name"
                             >
-                            <button type="button" class="audio-btn" id="recordBtn">
-                                <i class="fas fa-microphone"></i>
-                            </button>
                         </div>
                         <div id="audioFeedback" class="audio-feedback" style="display: none;">
                             <span class="recording-text">Recording...</span>
@@ -328,4 +330,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Refresh data periodically (every 30 seconds)
     setInterval(refreshUI, 30000);
+
+    async function fetchHighUrgencyNotes() {
+        try {
+            const response = await fetch('/get_high_urgency_notes');
+            if (response.status === 404) {
+                console.warn('High urgency notes endpoint not found');
+                return [];
+            }
+            if (!response.ok) throw new Error('Failed to fetch high urgency notes');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching high urgency notes:', error);
+            return [];
+        }
+    }
+
+    async function updateSummarySection() {
+        const highUrgencyNotes = await fetchHighUrgencyNotes();
+        const summaryList = document.querySelector('.summary-list');
+        summaryList.innerHTML = ''; // Clear existing items
+
+        highUrgencyNotes.forEach(note => {
+            const summaryItem = document.createElement('a');
+            summaryItem.className = 'summary-item';
+            summaryItem.href = `/group/${encodeURIComponent(note.category)}`;
+            summaryItem.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                <div class="summary-content">
+                    <h4>${note.title}</h4>
+                    <p>Urgency: ${note.urgency}</p>
+                </div>
+            `;
+            summaryList.appendChild(summaryItem);
+        });
+    }
+
+    // Call updateSummarySection after initial data load
+    refreshUI();
+    updateSummarySection();
+
+    // Optionally, refresh the summary section periodically
+    setInterval(updateSummarySection, 30000);
 });
