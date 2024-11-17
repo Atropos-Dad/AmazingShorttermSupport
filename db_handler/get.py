@@ -66,3 +66,14 @@ def get_notes_by_category(category: str):
         'category': str(row[3]),
         'urgency': int(row[4])
     } for row in rows]
+
+def get_urgency(note_id: int):
+    conn = db.SingletonDBConnection().get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT urgency FROM notes WHERE id = ?
+    ''', (note_id,))
+    row = cursor.fetchone()
+    if row:
+        return int(row[0])
+    return None

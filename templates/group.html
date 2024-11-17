@@ -1,52 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Group Notes - NoteHub</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-    <div class="container">
-        <main class="main-content" style="margin-left: 0;">
-            <header>
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <a href="/" class="back-btn" style="text-decoration: none; color: inherit;">
-                        <i class="fas fa-arrow-left"></i>
-                    </a>
-                    <h1>{{ group_name }}</h1>
-                </div>
-                <div class="header-actions">
-                    <button class="main-record-btn">
-                        <i class="fas fa-microphone"></i>
-                        <span>Record Note</span>
-                    </button>
-                </div>
-            </header>
-
-            <section class="group-notes">
-                <div class="section-grid">
-                    {% for note in notes %}
-                    <div class="section-card">
-                        <h3>{{ note.title }} {% if note.urgency == 4 %}<span style="color: red">*</span>{% endif %}</h3>
-                        <p>{{ note.content }}</p>
-                        <div class="section-actions">
-                            <button class="edit-btn"><i class="fas fa-edit"></i></button>
-                            <button class="delete-btn"><i class="fas fa-trash"></i></button>
-                        </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Group Notes - NoteHub</title>
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='homepage.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+    </head>
+    <body>
+        <div class="container">
+            <main class="main-content" style="margin-left: 0">
+                <header>
+                    <div style="display: flex; align-items: center; gap: 1rem">
+                        <a
+                            href="/"
+                            class="back-btn"
+                            style="text-decoration: none; color: inherit"
+                        >
+                            <i class="fas fa-arrow-left"></i>
+                        </a>
+                        <h1>{{ group_name }}</h1>
                     </div>
-                    {% endfor %}
-                </div>
-            </section>
-        </main>
-    </div>
-    <script>
-        // Theme handling
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        }
-    </script>
-</body>
+                    <div class="header-actions">
+                        <button class="main-record-btn">
+                            <i class="fas fa-microphone"></i>
+                            <span>Record Note</span>
+                        </button>
+                    </div>
+                </header>
+
+                <section class="group-notes">
+                    <div class="section-grid">
+                        {% for note in notes %}
+                        <div class="section-card">
+                            <h3>
+                                {{ note.title }} {% if note.urgency == 4 %}<span
+                                    style="color: red"
+                                    >*</span
+                                >{% endif %}
+                            </h3>
+                            <p>{{ note.content }}</p>
+                            <p>Urgency: {{ note.urgency }}</p>
+                            <div class="section-actions">
+                                <button class="edit-btn">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="delete-btn">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </main>
+        </div>
+        <script>
+            // Theme handling
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme) {
+                document.documentElement.setAttribute("data-theme", savedTheme);
+            }
+        </script>
+    </body>
 </html>

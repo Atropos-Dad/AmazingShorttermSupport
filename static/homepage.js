@@ -115,13 +115,18 @@ document.addEventListener('DOMContentLoaded', () => {
         categories.forEach(category => {
             const categoryNotes = notes.filter(note => note.category === category);
             const noteCount = categoryNotes.length;
-            
+
+            // Calculate average urgency for the category
+            const totalUrgency = categoryNotes.reduce((sum, note) => sum + note.urgency, 0);
+            const averageUrgency = noteCount > 0 ? (totalUrgency / noteCount).toFixed(1) : 'N/A';
+
             const newSection = document.createElement('div');
             newSection.className = 'section-card';
             newSection.dataset.groupName = category;
             newSection.innerHTML = `
                 <h3>${category}</h3>
                 <p>${noteCount} note${noteCount !== 1 ? 's' : ''}</p>
+                <p>Average Urgency: ${averageUrgency}</p>
                 <div class="section-actions">
                     <button class="edit-btn"><i class="fas fa-edit"></i></button>
                     <button class="delete-btn"><i class="fas fa-trash"></i></button>
