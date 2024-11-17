@@ -11,6 +11,7 @@ It will transcribe your voice, generate a summary/title, and categorize it with 
 3. You will need both a groq key and a openrouter key, which you can get from the following links:
     - [Groq](https://groq.io/)
     - [OpenRouter](https://openrouter.ai/)
+  
 We use groq for the transcription and openrouter for the summarization. But under the hood we use litellm, so changing openrouter to another model should be trivial. 
 4. Create a .env file in the root directory with the following variables:
     ```
