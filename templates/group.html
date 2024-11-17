@@ -96,6 +96,123 @@
                     }
                 });
             });
+
+            // Add event listeners for edit buttons
+            document.querySelectorAll(".edit-btn").forEach((button) => {
+                button.addEventListener("click", (e) => {
+                    const noteCard = e.target.closest(".section-card");
+                    const titleElement = noteCard.querySelector("h3");
+                    const contentElement =
+                        noteCard.querySelector("p:nth-of-type(1)");
+                    const urgencyElement =
+                        noteCard.querySelector("p:nth-of-type(2)");
+                    const editButton = button;
+                    let saveButton = noteCard.querySelector(".save-btn");
+
+                    // If already in edit mode, do nothing
+                    if (saveButton) return;
+
+                    // Create input fields
+                    const titleInput = document.createElement("input");
+                    titleInput.type = "text";
+                    titleInput.value = titleElement.textContent.trim();
+                    titleInput.className = "edit-title";
+
+                    const contentInput = document.createElement("textarea");
+                    contentInput.value = contentElement.textContent.trim();
+                    contentInput.className = "edit-content";
+
+                    const urgencyInput = document.createElement("input");
+                    urgencyInput.type = "number";
+                    urgencyInput.value = urgencyElement.textContent
+                        .replace("Urgency: ", "")
+                        .trim();
+                    urgencyInput.min = 0;
+                    urgencyInput.max = 5;
+                    urgencyInput.className = "edit-urgency";
+
+                    // Replace text with input fields
+                    titleElement.innerHTML = "";
+                    titleElement.appendChild(titleInput);
+                    contentElement.innerHTML = "";
+                    contentElement.appendChild(contentInput);
+                    urgencyElement.innerHTML = "Urgency: ";
+                    urgencyElement.appendChild(urgencyInput);
+
+                    // Change edit button to save button
+                    const saveBtn = document.createElement("button");
+                    saveBtn.className = "save-btn";
+                    saveBtn.innerHTML = '<i class="fas fa-save"></i>';
+                    editButton.parentNode.replaceChild(saveBtn, editButton);
+
+                    // Add event listener to save button
+                    saveBtn.addEventListener("click", async (e) => {
+                        e.stopPropagation();
+                        const noteId = noteCard.dataset.noteId;
+                        const updatedTitle = titleInput.value.trim();
+                        const updatedContent = contentInput.value.trim();
+                        const updatedUrgency = parseInt(urgencyInput.value, 10);
+
+                        if (
+                            !updatedTitle ||
+                            !updatedContent ||
+                            isNaN(updatedUrgency)
+                        ) {
+                            alert("Please fill in all fields correctly.");
+                            return;
+                        }
+
+                        try {
+                            const response = await fetch(
+                                `/update_note/${noteId}`,
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({
+                                        title: updatedTitle,
+                                        content: updatedContent,
+                                        urgency: updatedUrgency,
+                                    }),
+                                }
+                            );
+
+                            const result = await response.json();
+
+                            if (response.ok) {
+                                // Update the UI with new data
+                                titleElement.textContent = updatedTitle;
+                                contentElement.textContent = updatedContent;
+                                urgencyElement.textContent = `Urgency: ${updatedUrgency}`;
+
+                                // Change save button back to edit button
+                                const newEditBtn =
+                                    document.createElement("button");
+                                newEditBtn.className = "edit-btn";
+                                newEditBtn.innerHTML =
+                                    '<i class="fas fa-edit"></i>';
+                                saveBtn.parentNode.replaceChild(
+                                    newEditBtn,
+                                    saveBtn
+                                );
+
+                                // Reattach event listener to new edit button
+                                newEditBtn.addEventListener(
+                                    "click",
+                                    arguments.callee
+                                );
+                                alert(result.message);
+                            } else {
+                                alert(result.message);
+                            }
+                        } catch (error) {
+                            console.error("Error updating note:", error);
+                            alert("Failed to update note.");
+                        }
+                    });
+                });
+            });
         </script>
     </body>
 </html>
