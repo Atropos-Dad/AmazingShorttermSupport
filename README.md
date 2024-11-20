@@ -12,12 +12,15 @@ It will transcribe your voice, generate a summary/title, and categorize it with 
     - [Groq](https://groq.io/)
     - [OpenRouter](https://openrouter.ai/)
   
-We use groq for the transcription and openrouter for the summarization. But under the hood we use litellm, so changing openrouter to another model should be trivial. 
+We use groq for the transcription and openrouter for the summarization. But under the hood we use litellm, so changing openrouter to another provider should be trivial. 
+
 4. Create a .env file in the root directory with the following variables:
-    ```
-    GROQ_API_KEY=your_groq_key
-    OPENROUTER_KEY=your_openrouter_key
-    ```
+
+```
+GROQ_API_KEY=your_groq_key
+OPENROUTER_KEY=your_openrouter_key
+```
+    
 5. Run main.py! 
 
 ## Where to now?
